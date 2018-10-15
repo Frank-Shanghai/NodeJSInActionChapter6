@@ -1,5 +1,7 @@
 const entries = require('./routes/entries');
+const session = require('express-session');
 const validate = require('./middleware/validate');
+const messages = require('./middleware/messages');
 
 //var createError = require('http-errors');
 var express = require('express');
@@ -22,10 +24,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+app.use(messages);
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//app.use('/users', usersRouter);
 
 app.get('/', entries.list);
 app.get('/post', entries.form);
@@ -33,7 +37,6 @@ app.post('/post',
       validate.required('entry[title]'),
       validate.lengthAbove('entry[body]', 4),
       entries.submit);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

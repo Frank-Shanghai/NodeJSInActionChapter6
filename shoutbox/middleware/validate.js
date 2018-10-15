@@ -1,3 +1,5 @@
+'use strict';
+
 function parseField(field){
     console.log('Parse field: ' + field.split(/\[|\]/).filter((s)=>s));
     return field.split(/\[|\]/).filter((s)=>s);
