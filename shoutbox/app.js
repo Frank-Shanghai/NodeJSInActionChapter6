@@ -1,7 +1,7 @@
 const entries = require('./routes/entries');
-const session = require('express-session');
+const session = require('express-session'); // Related implementation not included in Chapter 6
 const validate = require('./middleware/validate');
-const messages = require('./middleware/messages');
+const messages = require('./middleware/messages'); // Related implementation not included in Chapter 6
 
 //var createError = require('http-errors');
 var express = require('express');
