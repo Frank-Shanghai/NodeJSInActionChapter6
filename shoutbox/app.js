@@ -2,6 +2,10 @@ const entries = require('./routes/entries');
 const session = require('express-session'); // Related implementation not included in Chapter 6
 const validate = require('./middleware/validate');
 const messages = require('./middleware/messages'); // Related implementation not included in Chapter 6
+const register = require('./routes/register');
+const login = require('./routes/login');
+const user = require('./middleware/user');
+const api = require('./routes/api');
 
 //var createError = require('http-errors');
 var express = require('express');
@@ -25,8 +29,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
-app.use(messages);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(user);
+app.use(messages);
 
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
@@ -37,6 +42,12 @@ app.post('/post',
       validate.required('entry[title]'),
       validate.lengthAbove('entry[body]', 4),
       entries.submit);
+app.get('/register', register.form);
+app.post('/register', register.submit);
+app.get('/login', login.form);
+app.post('/login', login.submit);
+app.get('/logout', login.logout);
+app.get('/api/user/:id', api.user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
