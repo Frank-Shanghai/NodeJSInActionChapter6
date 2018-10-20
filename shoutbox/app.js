@@ -6,6 +6,8 @@ const register = require('./routes/register');
 const login = require('./routes/login');
 const user = require('./middleware/user');
 const api = require('./routes/api');
+const Entry = require('./models/entry');
+const page = require('./middleware/page');
 
 //var createError = require('http-errors');
 var express = require('express');
@@ -30,24 +32,30 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(user);
 app.use(messages);
+app.use('/api', api.auth);
+app.use(user);
 
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
 
 app.get('/', entries.list);
 app.get('/post', entries.form);
+
+// Actually these 2 routers are duplicate
 app.post('/post', 
       validate.required('entry[title]'),
       validate.lengthAbove('entry[body]', 4),
       entries.submit);
+app.post('/api/entry', entries.submit);
+
 app.get('/register', register.form);
 app.post('/register', register.submit);
 app.get('/login', login.form);
 app.post('/login', login.submit);
 app.get('/logout', login.logout);
 app.get('/api/user/:id', api.user);
+app.get('/api/entries/:page?', page(Entry.count), api.entries);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

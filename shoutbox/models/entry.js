@@ -27,6 +27,10 @@ class Entry{
             callBack(null, entries);
         });
     }
+
+    static count(callback){
+        db.llen('entries', callback);
+    }
 }
 
 module.exports = Entry;
